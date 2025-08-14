@@ -1,4 +1,4 @@
-# ♟️ Chess++ — An Elegant Evolution of Chess
+# ♟️ Chess++ — An Elegant Variant of Standard Chess
 
 **Author:** Rajdeep Das  
 📧 **Email:** rjdpdas131@gmail.com  
@@ -72,7 +72,6 @@ While chess is timeless, at the **highest levels** it faces challenges:
 ### ⚔️ Capturing Catapults
 - Catapults are **captured together**.
 - Both must be occupied by opponent’s pieces at the same time.
-- 
 ---
 
 ### ♜ Piece Interactions
