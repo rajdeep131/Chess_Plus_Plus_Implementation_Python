@@ -37,7 +37,7 @@ class Piece:
                 return True
         return False
 
-    def throughCataputltMove(self):
+    def throughCatapultMove(self):
         move=createMoveDictionary()
         if self.isOnCatapult(catapultColor=self.color):
             catapultCoordinate1=self.boardObject.pieces[self.color]['Catapults'][0].currentPos
@@ -78,7 +78,7 @@ class Knight(Piece):
             move['endCoordinate']=el
             validMoveList.append(move)
         
-        validMoveList+=self.throughCataputltMove()
+        validMoveList+=self.throughCatapultMove()
 
         
         checkRestrictedValidMoveList=[]
@@ -120,7 +120,7 @@ class Bishop(Piece):
                 move['endCoordinate']=(posX,posY)
                 validMoveList.append(move)
             
-        validMoveList+=self.throughCataputltMove()
+        validMoveList+=self.throughCatapultMove()
 
         checkRestrictedValidMoveList=[]
         if checkRestricted:
@@ -161,7 +161,7 @@ class Rook(Piece):
                 move['endCoordinate']=(posX,posY)
                 validMoveList.append(move)
             
-        validMoveList+=self.throughCataputltMove()
+        validMoveList+=self.throughCatapultMove()
 
         checkRestrictedValidMoveList=[]
         if checkRestricted:
@@ -225,7 +225,7 @@ class Queen(Piece):
                 move['endCoordinate']=(posX,posY)
                 validMoveList.append(move)
     
-        validMoveList+=self.throughCataputltMove()
+        validMoveList+=self.throughCatapultMove()
 
         checkRestrictedValidMoveList=[]
         if checkRestricted:
@@ -256,7 +256,7 @@ class King(Piece):
             move['endCoordinate']=(posX,posY)
             validMoveList.append(move)
         
-        validMoveList+=self.throughCataputltMove()
+        validMoveList+=self.throughCatapultMove()
         
         if checkRestricted:       
             if self.color=='White' and (not self.boardObject.checkIfThreatenedSq((7,4),threatenedBy='Black')):
@@ -270,7 +270,7 @@ class King(Piece):
                 
                 if self.castleRights['QS'] :
                     if self.boardObject.board[7][3]==0 and self.boardObject.board[7][2]==0 and self.boardObject.board[7][1]==0 and \
-                    (not self.boardObject.checkIfThreatenedSq((7,3),threatenedBy='White')) and (not self.boardObject.checkIfThreatenedSq((7,2),threatenedBy='White')) :
+                    (not self.boardObject.checkIfThreatenedSq((7,3),threatenedBy='Black')) and (not self.boardObject.checkIfThreatenedSq((7,2),threatenedBy='Black')) :
                         move=createMoveDictionary()
                         move['movedBy']=self.color
                         move['specialMove']='W_Castling_QS'
@@ -386,7 +386,7 @@ class Pawn(Piece):
                 move['endCoordinate']=(self.currentPos[0]-2,self.currentPos[1])
                 validMoveList.append(move)
             
-            if isInTheBoard((self.currentPos[1]-1,self.currentPos[1]+1)) and self.boardObject.checkIfOccupiedSq((self.currentPos[0]-1,self.currentPos[1]+1),'Black'):
+            if isInTheBoard((self.currentPos[0]-1,self.currentPos[1]+1)) and self.boardObject.checkIfOccupiedSq((self.currentPos[0]-1,self.currentPos[1]+1),'Black'):
                 if self.currentPos[0]==1:
                     for pieceName in ['Queen','Rook','Bishop','Knight']:
                         move=createMoveDictionary()
@@ -399,7 +399,7 @@ class Pawn(Piece):
                     move['startCoordinate']=self.currentPos
                     move['endCoordinate']=(self.currentPos[0]-1,self.currentPos[1]+1)
                     validMoveList.append(move)
-            if isInTheBoard((self.currentPos[1]-1,self.currentPos[1]-1)) and self.boardObject.checkIfOccupiedSq((self.currentPos[0]-1,self.currentPos[1]-1),'Black'):
+            if isInTheBoard((self.currentPos[0]-1,self.currentPos[1]-1)) and self.boardObject.checkIfOccupiedSq((self.currentPos[0]-1,self.currentPos[1]-1),'Black'):
                 if self.currentPos[0]==1:
                     for pieceName in ['Queen','Rook','Bishop','Knight']:
                         move=createMoveDictionary()

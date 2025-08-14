@@ -253,11 +253,11 @@ class ChessPlusPlusBoard():
                 if 'Bishop' in move['specialMove']:
                     self.board[endCoordinate[0]][endCoordinate[1]]=Bishop(color='White',currentPos=endCoordinate,board=self)
                 if 'Rook' in move['specialMove']:
-                    self.board[endCoordinate[0]][endCoordinate[1]]=Queen(color='White',currentPos=endCoordinate,board=self)
+                    self.board[endCoordinate[0]][endCoordinate[1]]=Rook(color='White',currentPos=endCoordinate,board=self)
                 
             
             if move['movedBy']=='Black':
-                startCoordinate=(5,int(move['specialMove'][-3]))
+                startCoordinate=(6,int(move['specialMove'][-3]))
                 endCoordinate=(7,int(move['specialMove'][-1]))
                 pieceCaptured=self.board[endCoordinate[0]][endCoordinate[1]]
                 self.board[endCoordinate[0]][endCoordinate[1]]=self.board[startCoordinate[0]][startCoordinate[1]]
@@ -295,7 +295,7 @@ class ChessPlusPlusBoard():
                 if pieceCaptured!=0:
                     self.piecesCaptured.append(pieceCaptured)
 
-                if self.board[endCoordinate[0]][endCoordinate[1]].name=='Rook': #update castle rights if rook moved
+                if self.board[endCoordinate[0]][endCoordinate[1]]!=0 and self.board[endCoordinate[0]][endCoordinate[1]].name=='Rook': #update castle rights if rook moved
                     if self.board[endCoordinate[0]][endCoordinate[1]].currentPos==(0,0):
                         self.pieces['Black']['King'].castleRights['QS']=False
                     if self.board[endCoordinate[0]][endCoordinate[1]].currentPos==(0,7):
@@ -305,11 +305,11 @@ class ChessPlusPlusBoard():
                     if self.board[endCoordinate[0]][endCoordinate[1]].currentPos==(7,7):
                         self.pieces['White']['King'].castleRights['KS']=False
                 
-                if self.board[endCoordinate[0]][endCoordinate[1]].name=='King': #update castle rights if king moved
+                if self.board[endCoordinate[0]][endCoordinate[1]]!=0 and self.board[endCoordinate[0]][endCoordinate[1]].name=='King': #update castle rights if king moved
                     self.pieces[move['movedBy']]['King'].castleRights['QS']=False
                     self.pieces[move['movedBy']]['King'].castleRights['KS']=False
 
-                if self.board[endCoordinate[0]][endCoordinate[1]].name=='Pawn':
+                if self.board[endCoordinate[0]][endCoordinate[1]]!=0 and self.board[endCoordinate[0]][endCoordinate[1]].name=='Pawn':
                     if self.board[endCoordinate[0]][endCoordinate[1]].color=='White': #giving en passsant rights
                         if startCoordinate[0]==6 and endCoordinate[0]==4:
                             if isInTheBoard((endCoordinate[0],endCoordinate[1]+1)) and self.board[endCoordinate[0]][endCoordinate[1]+1]!=0 and self.board[endCoordinate[0]][endCoordinate[1]+1].name=='Pawn' and self.board[endCoordinate[0]][endCoordinate[1]+1].color=='Black':
@@ -324,8 +324,8 @@ class ChessPlusPlusBoard():
                             if isInTheBoard((endCoordinate[0],endCoordinate[1]-1)) and self.board[endCoordinate[0]][endCoordinate[1]-1]!=0 and self.board[endCoordinate[0]][endCoordinate[1]-1].name=='Pawn' and self.board[endCoordinate[0]][endCoordinate[1]-1].color=='White':
                                 self.board[endCoordinate[0]][endCoordinate[1]-1].isSevenEnPassantPossible=True
                             
-                            
-                self.board[endCoordinate[0]][endCoordinate[1]].updateCurrentPos(endCoordinate)
+                if self.board[endCoordinate[0]][endCoordinate[1]]!=0:            
+                    self.board[endCoordinate[0]][endCoordinate[1]].updateCurrentPos(endCoordinate)
         
         if updateValue:
             if self.pieces['White']['Catapults'][0].isOpponentOnMe() and self.pieces['White']['Catapults'][1].isOpponentOnMe(): # Checking if catapults are captured 
@@ -357,7 +357,7 @@ class ChessPlusPlusBoard():
         startCoordinate=rawMove['startCoordinate']
         endCoordinate=rawMove['endCoordinate']
         move=None
-        if startCoordinate!=None:
+        if startCoordinate!=None and rawMove['specialMove']==None:
             pieceMovedName=self.board[startCoordinate[0]][startCoordinate[1]].name
             pieceCapturedName=self.board[endCoordinate[0]][endCoordinate[1]].name if self.board[endCoordinate[0]][endCoordinate[1]]!=0 else None
             move=Move(movedBy=rawMove['movedBy'],startCoordinate=startCoordinate,endCoordinate=endCoordinate,pieceMovedName=pieceMovedName,pieceCapturedName=pieceCapturedName)
@@ -368,25 +368,25 @@ class ChessPlusPlusBoard():
             startCoordinate=None
             endCoordinate=None
             if 'En_Passant' in rawMove['specialMove']:
-                if move['movedBy']=='White':
-                    startCoordinate=(3,int(move['specialMove'][-3]))
-                    endCoordinate=(2,int(move['specialMove'][-1]))
-                if move['movedBy']=='Black':
-                    startCoordinate=(4,int(move['specialMove'][-3]))
-                    endCoordinate=(5,int(move['specialMove'][-1]))
+                if rawMove['movedBy']=='White':
+                    startCoordinate=(3,int(rawMove['specialMove'][-3]))
+                    endCoordinate=(2,int(rawMove['specialMove'][-1]))
+                if rawMove['movedBy']=='Black':
+                    startCoordinate=(4,int(rawMove['specialMove'][-3]))
+                    endCoordinate=(5,int(rawMove['specialMove'][-1]))
                 move=Move(movedBy=rawMove['movedBy'],startCoordinate=startCoordinate,endCoordinate=endCoordinate,pieceMovedName='Pawn',pieceCapturedName='Pawn')
                 move.specialMove=rawMove
             if 'Castling' in rawMove['specialMove']:
                 move=Move(movedBy=rawMove['movedBy'])
                 move.specialMove=rawMove
             if 'Pawn_Promotion' in rawMove['specialMove']:
-                if move['movedBy']=='White':
-                    startCoordinate=(1,int(move['specialMove'][-3]))
-                    endCoordinate=(0,int(move['specialMove'][-1]))
-                if move['movedBy']=='Black':
-                    startCoordinate=(6,int(move['specialMove'][-3]))
-                    endCoordinate=(7,int(move['specialMove'][-1]))
-                pieceCapturedName=self.board[endCoordinate[0]][endCoordinate[1]].name if self.board[endCoordinate[0]][endCoordinate[1]]!=0 else None
+                if rawMove['movedBy']=='White':
+                    startCoordinate=(1,int(rawMove['specialMove'][-3]))
+                    endCoordinate=(0,int(rawMove['specialMove'][-1]))
+                if rawMove['movedBy']=='Black':
+                    startCoordinate=(6,int(rawMove['specialMove'][-3]))
+                    endCoordinate=(7,int(rawMove['specialMove'][-1]))
+                pieceCapturedName=self.board[endCoordinate[0]][endCoordinate[1]].name if endCoordinate and self.board[endCoordinate[0]][endCoordinate[1]]!=0 else None
                 move=Move(movedBy=rawMove['movedBy'],startCoordinate=startCoordinate,endCoordinate=endCoordinate,pieceMovedName='Pawn',pieceCapturedName=pieceCapturedName)
                 move.specialMove=rawMove
             if rawMove['throughCatapultMove']:
